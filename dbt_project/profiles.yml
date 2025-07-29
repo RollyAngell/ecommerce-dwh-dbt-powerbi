@@ -1,0 +1,42 @@
+ecommerce_dw:
+  outputs:
+    dev:
+      type: postgres
+      threads: "{{ env_var('DBT_THREADS', 2) | int }}"
+      host: "{{ env_var('DB_HOST', 'localhost') }}"
+      port: "{{ env_var('DB_PORT', 5432) | int }}"
+      user: "{{ env_var('DB_USER', 'postgres') }}"
+      pass: "{{ env_var('DB_PASSWORD') }}"  # No default for security
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: "{{ env_var('DB_SCHEMA', 'analytics') }}"
+      keepalives_idle: 0
+      sslmode: "{{ env_var('SSL_MODE', 'prefer') }}"
+      search_path: "{{ env_var('DB_SCHEMA', 'analytics') }},raw,public"
+    
+    staging:
+      type: postgres
+      threads: "{{ env_var('DBT_THREADS', 4) | int }}"
+      host: "{{ env_var('DB_HOST', 'localhost') }}"
+      port: "{{ env_var('DB_PORT', 5432) | int }}"
+      user: "{{ env_var('DB_USER') }}"
+      pass: "{{ env_var('DB_PASSWORD') }}"
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: "{{ env_var('DB_SCHEMA', 'analytics_staging') }}"
+      keepalives_idle: 0
+      sslmode: "{{ env_var('SSL_MODE', 'require') }}"
+      search_path: "{{ env_var('DB_SCHEMA', 'analytics_staging') }},raw,public"
+    
+    prod:
+      type: postgres
+      threads: "{{ env_var('DBT_THREADS', 8) | int }}"
+      host: "{{ env_var('DB_HOST') }}"
+      port: "{{ env_var('DB_PORT', 5432) | int }}"
+      user: "{{ env_var('DB_USER') }}"
+      pass: "{{ env_var('DB_PASSWORD') }}"
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: "{{ env_var('DB_SCHEMA', 'analytics') }}"
+      keepalives_idle: 0
+      sslmode: "{{ env_var('SSL_MODE', 'require') }}"
+      search_path: "{{ env_var('DB_SCHEMA', 'analytics') }},raw,public"
+
+  target: "{{ env_var('DBT_ENV', 'dev') }}" 

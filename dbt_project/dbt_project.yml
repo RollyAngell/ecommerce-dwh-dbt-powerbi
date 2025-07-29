@@ -1,0 +1,129 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'ecommerce_dw'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'ecommerce_dw'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# Variables by environment
+vars:
+  # Global variables
+  project_name: 'ecommerce_dw'
+  
+  # Environment-specific variables
+  dev:
+    start_date: '2023-01-01'
+    end_date: '2023-12-31'
+    enable_debug: true
+    sample_size: 1000
+    enable_incremental: false
+    
+  staging:
+    start_date: '2023-01-01'
+    end_date: '2024-12-31'
+    enable_debug: false
+    sample_size: 10000
+    enable_incremental: true
+    
+  prod:
+    start_date: '2022-01-01'
+    end_date: '2024-12-31'
+    enable_debug: false
+    sample_size: null  # Full data
+    enable_incremental: true
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/reference/model-configs
+models:
+  ecommerce_dw:
+    # Staging models configuration
+    staging:
+      +materialized: view
+      +tags: ["staging", "source"]
+      dev:
+        +full_refresh: true
+      staging:
+        +full_refresh: false
+      prod:
+        +full_refresh: false
+    
+    # Marts configuration
+    marts:
+      # Dimensions configuration
+      dimensions:
+        +tags: ["dimension", "mart"]
+        dev:
+          +materialized: view  # Views for fast development
+        staging:
+          +materialized: table
+        prod:
+          +materialized: table
+          +post-hook: "{{ grant_select_on_schemas(schemas, 'analytics_reader') }}"
+      
+      # Facts configuration  
+      facts:
+        +tags: ["fact", "mart"]
+        +materialized: table
+        staging:
+          +materialized: table
+        prod:
+          +materialized: incremental
+          +on_schema_change: "sync_all_columns"
+          +incremental_strategy: "{{ env_var('INCREMENTAL_STRATEGY', 'merge') }}"
+          +post-hook: "{{ grant_select_on_schemas(schemas, 'analytics_reader') }}"
+
+# Tests configuration by environment
+tests:
+  ecommerce_dw:
+    +store_failures: "{{ true if target.name in ['staging', 'prod'] else false }}"
+    +warn_if: ">10"
+    +error_if: ">50"
+    dev:
+      +severity: warn
+    staging:
+      +severity: error
+      +error_if: ">10"
+    prod:
+      +severity: error
+      +error_if: ">0"  # Zero tolerance in production
+
+# Seeds configuration
+seeds:
+  ecommerce_dw:
+    +quote_columns: true
+    dev:
+      +full_refresh: true
+    staging:
+      +full_refresh: false
+    prod:
+      +full_refresh: false
+
+# Snapshots configuration
+snapshots:
+  ecommerce_dw:
+    +target_schema: "{{ env_var('DB_SCHEMA', 'analytics') }}_snapshots"
+    +strategy: timestamp
+    +updated_at: '_loaded_at'
+
+# Macros configuration
+dispatch:
+  - macro_namespace: dbt_utils
+    search_order: ['ecommerce_dw', 'dbt_utils'] 

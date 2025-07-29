@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: Order fact table containing all order transactions with measures
+    columns:
+      - name: order_id
+        description: Unique identifier for orders (primary key)
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to dim_customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: product_id
+        description: Foreign key to dim_products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: order_date
+        description: Foreign key to dim_date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: quantity
+        description: Number of items ordered
+        tests:
+          - not_null
+      - name: total_amount
+        description: Total order amount in USD
+        tests:
+          - not_null
+
+  - name: fct_visits
+    description: Website visit fact table with engagement and conversion metrics
+    columns:
+      - name: visit_id
+        description: Unique identifier for visits (primary key)
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to dim_customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: visit_date
+        description: Foreign key to dim_date
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: converted_flag
+        description: 1 if visit resulted in order, 0 otherwise
+      - name: engagement_score
+        description: Calculated engagement score (0-100) based on time and pages 
