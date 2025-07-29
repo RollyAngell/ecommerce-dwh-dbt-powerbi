@@ -1,4 +1,0 @@
-2025-07-28 12:18:19,718 - INFO - Successfully connected to PostgreSQL
-2025-07-28 12:18:19,718 - INFO - Loading customers data...
-2025-07-28 12:18:19,722 - INFO - Loaded 20 rows from data/customers.csv
-2025-07-28 12:18:19,734 - INFO - Cleared existing data from raw.customers
