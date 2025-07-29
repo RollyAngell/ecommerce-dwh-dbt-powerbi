@@ -1,0 +1,26 @@
+product_id,product_name,category,price
+101,Smartphone Samsung Galaxy,Electronics,599.99
+102,Laptop Dell XPS 13,Electronics,1299.99
+103,Wireless Headphones Sony,Electronics,199.99
+104,Gaming Mouse Logitech,Electronics,79.99
+105,4K Monitor LG,Electronics,399.99
+201,Nike Air Max Sneakers,Fashion,129.99
+202,Levi's Jeans 501,Fashion,89.99
+203,Cotton T-Shirt Uniqlo,Fashion,19.99
+204,Leather Jacket Zara,Fashion,199.99
+205,Winter Coat North Face,Fashion,299.99
+301,Coffee Maker Nespresso,Home,249.99
+302,Vacuum Cleaner Dyson,Home,399.99
+303,Air Fryer Philips,Home,149.99
+304,Blender Vitamix,Home,299.99
+305,Kitchen Knife Set,Home,89.99
+401,Protein Powder Optimum,Health,49.99
+402,Vitamin D Supplements,Health,24.99
+403,Fitness Tracker Fitbit,Health,199.99
+404,Yoga Mat Premium,Health,59.99
+405,Resistance Bands Set,Health,29.99
+501,The Great Gatsby Book,Books,12.99
+502,Harry Potter Collection,Books,59.99
+503,Cooking Masterclass DVD,Books,24.99
+504,Spanish Language Course,Books,39.99
+505,Photography Guide,Books,29.99 
